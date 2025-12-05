@@ -10,6 +10,7 @@ LiteAssistant is a lightweight home automation dashboard designed to control and
 
 *   **Auto-Discovery**: Automatically discovers Tasmota devices on your MQTT broker.
 *   **Device Control**: Toggle switches, view sensor data, and manage device settings.
+*   **Historical Data**: Shows historical data in graph for your sensors.
 *   **Schedules**: Create flexible schedules (Once, Daily, Weekly, Interval) for your devices.
     *   *Interval Schedules*: Run devices periodically (e.g., turn on for 10 seconds every 5 minutes).
 *   **Automations**: Create simple "If This Then That" rules based on device states or sensor values.
@@ -17,6 +18,7 @@ LiteAssistant is a lightweight home automation dashboard designed to control and
 *   **Dashboard**: customizable dashboard to view your most important devices.
 *   **Profile Management**: Update your username and password.
 
+![Screenshot](image.png)
 ## Prerequisites
 
 *   **Python 3.9+**
