@@ -85,6 +85,9 @@ export default function Login({ setIsAuthenticated }) {
                     >
                         {isRegister ? 'Already have an account? Login' : 'Need an account? Register'}
                     </button>
+                    <div className="mt-4 text-center text-xs text-gray-500">
+                        Default: admin / admin123
+                    </div>
                 </form>
             </div>
         </div>
