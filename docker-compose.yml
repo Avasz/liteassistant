@@ -8,6 +8,7 @@ services:
       POSTGRES_USER: liteassistant
       POSTGRES_PASSWORD: liteassistant
       POSTGRES_DB: liteassistant
+      TZ: ${TZ:-UTC}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -26,6 +27,8 @@ services:
     container_name: liteassistant-app
     env_file:
       - .env
+    environment:
+      - TZ=${TZ:-UTC}
     # environment:
     #   - DATABASE_URL=${DATABASE_URL}
     #   - SECRET_KEY=${SECRET_KEY}
