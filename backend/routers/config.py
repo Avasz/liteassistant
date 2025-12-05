@@ -21,10 +21,8 @@ async def update_mqtt_config(config: schemas.MQTTConfigCreate, db: AsyncSession 
     updated_config = await crud.update_mqtt_config(db, config)
     
     # Reload MQTT service with new config
-    # Note: In a real app, we might want to do this more gracefully
-    await mqtt_service.load_config()
-    # Restarting the service logic would be needed here to reconnect
-    # For now, we assume the user might need to restart the app or we implement a reconnect method
+    # Reload MQTT service with new config
+    await mqtt_service.restart()
     
     return updated_config
 

@@ -308,9 +308,28 @@ class MQTTService:
             logger.warning("Cannot publish, MQTT not connected")
 
     async def stop(self):
+        logger.info("Stopping MQTT Service...")
         if self.client:
-            # aiomqtt client context manager handles disconnect, 
-            # but we might need to cancel the loop task if it's running
-            pass
+            try:
+                # aiomqtt client disconnects on context exit, but we can force it if needed
+                # or just cancelling the task will trigger the context exit
+                pass 
+            except Exception as e:
+                logger.error(f"Error disconnecting: {e}")
+            self.client = None
+        
+        # Cancel tasks
+        for task in self._tasks:
+            if not task.done():
+                task.cancel()
+        self._tasks.clear()
+        self.is_connected = False
+
+    async def restart(self):
+        logger.info("Restarting MQTT Service...")
+        await self.stop()
+        # Give it a moment to cleanup
+        await asyncio.sleep(1)
+        await self.start()
 
 mqtt_service = MQTTService()
