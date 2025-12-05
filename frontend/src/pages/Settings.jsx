@@ -168,7 +168,7 @@ export default function Settings() {
                                     await api.post('/config/mqtt/discover');
                                     setMessage('Discovery triggered! Check the dashboard in a few seconds.');
                                     // Refresh count after a delay
-                                    setTimeout(loadDeviceCount, 2000);
+                                    setTimeout(loadDevices, 2000);
                                 } catch (error) {
                                     setMessage('Failed to trigger discovery: ' + (error.response?.data?.detail || error.message));
                                 }
