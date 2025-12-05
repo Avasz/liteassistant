@@ -49,7 +49,15 @@ class TimerService:
                         continue
                         
                     try:
-                        end_time = datetime.fromisoformat(end_time_str.replace('Z', '+00:00'))
+                        # Handle Z for UTC
+                        if end_time_str.endswith('Z'):
+                            end_time_str = end_time_str.replace('Z', '+00:00')
+                        
+                        end_time = datetime.fromisoformat(end_time_str)
+                        
+                        # Ensure end_time is timezone aware (assume UTC if not)
+                        if end_time.tzinfo is None:
+                            end_time = end_time.replace(tzinfo=timezone.utc)
                         
                         if now >= end_time:
                             # Timer expired - turn off switch

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from .. import database, schemas, crud, models
@@ -66,7 +66,14 @@ async def update_device(device_id: int, device_update: schemas.DeviceBase, db: A
     return updated_device
 
 @router.post("/{device_id}/timer")
-async def set_timer(device_id: int, switch: str, duration_seconds: int = 0, duration_minutes: int = 0, db: AsyncSession = Depends(database.get_db)):
+async def set_timer(
+    device_id: int, 
+    switch: str, 
+    background_tasks: BackgroundTasks,
+    duration_seconds: int = 0, 
+    duration_minutes: int = 0, 
+    db: AsyncSession = Depends(database.get_db)
+):
     """Set a timer to auto-off a switch after specified duration"""
     from datetime import datetime, timedelta, timezone
     
@@ -76,34 +83,43 @@ async def set_timer(device_id: int, switch: str, duration_seconds: int = 0, dura
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
     
-    # Calculate end time
-    total_seconds = duration_seconds + (duration_minutes * 60)
-    if total_seconds <= 0:
-        raise HTTPException(status_code=400, detail="Duration must be positive")
+    try:
+        # Calculate end time
+        total_seconds = duration_seconds + (duration_minutes * 60)
+        if total_seconds <= 0:
+            raise HTTPException(status_code=400, detail="Duration must be positive")
+            
+        end_time = datetime.now(timezone.utc) + timedelta(seconds=total_seconds)
         
-    end_time = datetime.now(timezone.utc) + timedelta(seconds=total_seconds)
-    
-    # Update active_timers (create new dict for SQLAlchemy change detection)
-    active_timers = dict(device.active_timers or {})
-    active_timers[switch] = end_time.isoformat()
-    
-    # Turn on the switch
-    full_topic = f"cmnd/{device.mqtt_topic}/{switch}"
-    await mqtt_service.publish(full_topic, "ON")
-    
-    # Send notification for timer start
-    from ..notification_service import notification_service
-    duration_str = f"{duration_minutes}m {duration_seconds}s" if duration_minutes else f"{duration_seconds}s"
-    await notification_service.notify("timer", f"Timer started for {device.name}/{switch}: {duration_str}. Switch turned ON.")
-    
-    # Update device
-    update_data = {"mqtt_topic": device.mqtt_topic, "active_timers": active_timers}
-    updated_device = await crud.create_or_update_device(db, update_data)
-    
-    # Notify frontend via WebSocket
-    await manager.broadcast({"type": "device_update"})
-    
-    return {"status": "timer_set", "switch": switch, "end_time": end_time.isoformat(), "device": updated_device}
+        # Update active_timers (create new dict for SQLAlchemy change detection)
+        active_timers = dict(device.active_timers or {})
+        active_timers[switch] = end_time.isoformat()
+        
+        # Turn on the switch
+        full_topic = f"cmnd/{device.mqtt_topic}/{switch}"
+        await mqtt_service.publish(full_topic, "ON")
+        
+        # Send notification for timer start (background task)
+        from ..notification_service import notification_service
+        duration_str = f"{duration_minutes}m {duration_seconds}s" if duration_minutes else f"{duration_seconds}s"
+        message = f"Timer started for {device.name}/{switch}: {duration_str}. Switch turned ON."
+        background_tasks.add_task(notification_service.notify, "timer", message)
+        
+        # Update device
+        update_data = {"mqtt_topic": device.mqtt_topic, "active_timers": active_timers}
+        updated_device = await crud.create_or_update_device(db, update_data)
+        
+        # Notify frontend via WebSocket
+        await manager.broadcast({"type": "device_update"})
+        
+        return {"status": "timer_set", "switch": switch, "end_time": end_time.isoformat(), "device": updated_device}
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error setting timer: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{device_id}/timer/{switch}")
 async def cancel_timer(device_id: int, switch: str, db: AsyncSession = Depends(database.get_db)):

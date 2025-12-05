@@ -6,6 +6,7 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
     const [showModal, setShowModal] = useState(false);
     const [duration, setDuration] = useState({ minutes: 5, seconds: 0 });
     const [timeRemaining, setTimeRemaining] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Calculate time remaining
     useEffect(() => {
@@ -36,6 +37,7 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
     }, [device.active_timers, switchName, onTimerUpdate]);
 
     const handleSetTimer = async () => {
+        setIsSubmitting(true);
         try {
             const totalSeconds = (parseInt(duration.minutes) || 0) * 60 + (parseInt(duration.seconds) || 0);
             if (totalSeconds <= 0) return;
@@ -43,10 +45,18 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
             await api.post(`/devices/${device.id}/timer`, null, {
                 params: { switch: switchName, duration_seconds: totalSeconds }
             });
+            console.log('Timer set successfully, calling onTimerUpdate');
             setShowModal(false);
-            onTimerUpdate?.();
+            if (onTimerUpdate) {
+                onTimerUpdate();
+            } else {
+                console.warn('onTimerUpdate is not defined');
+            }
         } catch (error) {
             console.error('Failed to set timer:', error);
+            alert('Failed to set timer: ' + (error.response?.data?.detail || error.message));
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -89,7 +99,7 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
             {showModal && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => !isSubmitting && setShowModal(false)}
                 >
                     <div
                         className="bg-white rounded-lg p-6 max-w-sm mx-4 shadow-xl"
@@ -104,7 +114,8 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
                                 <button
                                     key={m}
                                     onClick={() => setDuration({ minutes: m, seconds: 0 })}
-                                    className={`px-3 py-2 rounded ${duration.minutes === m && duration.seconds === 0 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                                    disabled={isSubmitting}
+                                    className={`px-3 py-2 rounded ${duration.minutes === m && duration.seconds === 0 ? 'bg-blue-500 text-white' : 'bg-gray-200'} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     {m}m
                                 </button>
@@ -119,7 +130,8 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
                                     onChange={(e) => setDuration({ ...duration, minutes: parseInt(e.target.value) || 0 })}
                                     min="0"
                                     max="1440"
-                                    className="w-full px-3 py-2 border rounded"
+                                    disabled={isSubmitting}
+                                    className="w-full px-3 py-2 border rounded disabled:opacity-50"
                                 />
                             </div>
                             <div className="flex-1">
@@ -130,22 +142,25 @@ export default function SwitchTimer({ device, switchName, onTimerUpdate }) {
                                     onChange={(e) => setDuration({ ...duration, seconds: parseInt(e.target.value) || 0 })}
                                     min="0"
                                     max="59"
-                                    className="w-full px-3 py-2 border rounded"
+                                    disabled={isSubmitting}
+                                    className="w-full px-3 py-2 border rounded disabled:opacity-50"
                                 />
                             </div>
                         </div>
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="flex-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                                disabled={isSubmitting}
+                                className="flex-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSetTimer}
-                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                disabled={isSubmitting}
+                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                             >
-                                Start Timer
+                                {isSubmitting ? 'Starting...' : 'Start Timer'}
                             </button>
                         </div>
                     </div>
