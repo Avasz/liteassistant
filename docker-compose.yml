@@ -24,9 +24,11 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: liteassistant-app
-    environment:
-      DATABASE_URL: postgresql+asyncpg://liteassistant:liteassistant@postgres:5432/liteassistant
-      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-this-in-production}
+    env_file:
+      - .env
+    # environment:
+    #   - DATABASE_URL=${DATABASE_URL}
+    #   - SECRET_KEY=${SECRET_KEY}
     ports:
       - "8000:8000"
     depends_on:
