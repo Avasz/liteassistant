@@ -1,0 +1,197 @@
+# Fix Docker Configuration
+
+## Goal Description
+The goal is to ensure the Dockerfile and `docker-compose.yml` are correctly configured for building and deploying the LiteAssistant application. This includes:
+- Building the frontend assets and copying them into the backend static directory.
+- Installing necessary system and Python dependencies.
+- Setting up proper environment variables and healthchecks.
+- Ensuring volume mounts work for development and production.
+- Adding a `.dockerignore` to reduce image size.
+- Verifying the setup by building the image and running the compose stack.
+
+## User Review Required
+> [!IMPORTANT]
+> No breaking changes are introduced. The changes only affect Docker configuration. Please review the proposed modifications to ensure they meet your deployment expectations.
+
+## Proposed Changes
+---
+### Dockerfile
+#### [MODIFY] Dockerfile
+```diff
+@@
+-# Multi-stage build for LiteAssistant
+-
+-# Stage 1: Build Frontend
+-FROM node:20-alpine AS frontend-builder
+-
+-WORKDIR /app/frontend
+-
+-# Copy frontend package files
+-COPY frontend/package*.json ./
+-
+-# Install dependencies
+-RUN npm ci
+-
+-# Copy frontend source
+-COPY frontend/ ./
+-
+-# Build frontend
+-RUN npm run build
+-
+-# Stage 2: Python Backend
+-FROM python:3.11-slim
+-
+-WORKDIR /app
+-
+-# Install system dependencies
+-RUN apt-get update && apt-get install -y \
+-    gcc \
+-    postgresql-client \
+-    && rm -rf /var/lib/apt/lists/*
+-
+-# Copy backend requirements
+-COPY backend/requirements.txt ./
+-
+-# Install Python dependencies
+-RUN pip install --no-cache-dir -r requirements.txt
+-
+-# Copy backend code
+-COPY backend/ ./backend/
+-
+-# Copy frontend build from previous stage
+-COPY --from=frontend-builder /app/frontend/dist ./backend/static
+-
+-# Create directory for database migrations
+-RUN mkdir -p backend/alembic/versions
+-
+-# Expose port
+-EXPOSE 8000
+-
+-# Set environment variables
+-ENV PYTHONUNBUFFERED=1
+-ENV DATABASE_URL=postgresql+asyncpg://liteassistant:liteassistant@postgres:5432/liteassistant
+-
+-# Run database migrations and start server
+-CMD ["sh", "-c", "cd backend && alembic upgrade head && cd .. && uvicorn backend.main:app --host 0.0.0.0 --port 8000"]
++# Multi-stage build for LiteAssistant
++
++## Stage 1: Build Frontend
++FROM node:20-alpine AS frontend-builder
++
++WORKDIR /app/frontend
++
++# Copy only package files first for caching
++COPY frontend/package*.json ./
++
++# Install frontend dependencies
++RUN npm ci
++
++# Copy the rest of the frontend source and build
++COPY frontend/ ./
++RUN npm run build
++
++## Stage 2: Python Backend
++FROM python:3.11-slim
++
++WORKDIR /app
++
++# Install system build dependencies (gcc) and PostgreSQL client
++RUN apt-get update && apt-get install -y \
++    gcc \
++    postgresql-client \
++    && rm -rf /var/lib/apt/lists/*
++
++# Install Python dependencies
++COPY backend/requirements.txt ./
++RUN pip install --no-cache-dir -r requirements.txt
++
++# Copy backend source code
++COPY backend/ ./backend/
++
++# Copy built frontend assets into the backend static directory
++COPY --from=frontend-builder /app/frontend/dist ./backend/static
++
++# Ensure alembic versions directory exists
++RUN mkdir -p backend/alembic/versions
++
++EXPOSE 8000
++
++ENV PYTHONUNBUFFERED=1
++ENV DATABASE_URL=postgresql+asyncpg://liteassistant:liteassistant@postgres:5432/liteassistant
++
++# Run migrations then start the FastAPI server
++CMD ["sh", "-c", "cd backend && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"]
+```
+
+---
+### docker-compose.yml
+#### [MODIFY] docker-compose.yml
+```diff
+@@
+   app:
+-    build: .
++    build:
++      context: .
++      dockerfile: Dockerfile
+@@
+-    volumes:
+-      # Optional: Mount for development (comment out for production)
+-      # - ./backend:/app/backend
+-      # - ./backend/static:/app/backend/static
+-      - app_data:/app/data
++    # In production we do not mount source code. For local development you can uncomment the mounts.
++    # volumes:
++    #   - ./backend:/app/backend
++    #   - ./backend/static:/app/backend/static
++    volumes:
++      - app_data:/app/data
+*** End Patch
+```
+
+---
+### .dockerignore
+#### [NEW] .dockerignore
+```text
+node_modules
+frontend/dist
+backend/__pycache__
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.git
+.gitignore
+.env
+.DS_Store
+```
+
+## Verification Plan
+### Automated Tests
+1. **Build Docker image**
+   ```bash
+   docker compose build
+   ```
+   Ensure the build completes without errors.
+2. **Run the stack**
+   ```bash
+   docker compose up -d
+   ```
+   Verify that both `liteassistant-db` and `liteassistant-app` containers are healthy.
+3. **Healthcheck**
+   ```bash
+   docker compose ps
+   ```
+   The `app` service should show `healthy` after migrations finish.
+4. **Endpoint test**
+   ```bash
+   curl -f http://localhost:8000/health
+   ```
+   Expect a `200 OK` response (or whatever health endpoint exists).
+5. **Frontend assets**
+   Open `http://localhost:8000` in a browser and confirm the UI loads and static assets are served.
+
+### Manual Verification
+- After `docker compose up`, navigate to `http://localhost:8000` and ensure the application UI renders correctly.
+- Check that the backend can connect to the Postgres container (logs should show successful DB connection).
+- Verify that database migrations run automatically (container logs should contain `alembic upgrade head`).
+```

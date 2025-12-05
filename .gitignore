@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+node_modules/
+dist/
+.DS_Store
+*.db
+*.sqlite3
+
+# Temporary utility and fix scripts
+fix_*.py
+add_column.py
+check_mqtt_config.py
+test_server.py
+trigger_scan.py
+create_user.py
+update_password.py
+
+# Logs
+*.log
+backend.log

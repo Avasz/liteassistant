@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: liteassistant-db
+    environment:
+      POSTGRES_USER: liteassistant
+      POSTGRES_PASSWORD: liteassistant
+      POSTGRES_DB: liteassistant
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U liteassistant"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: liteassistant-app
+    environment:
+      DATABASE_URL: postgresql+asyncpg://liteassistant:liteassistant@postgres:5432/liteassistant
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-this-in-production}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    # For development, uncomment the following volume mounts:
+    # volumes:
+    #   - ./backend:/app/backend
+    #   - ./backend/static:/app/backend/static
+    volumes:
+      - app_data:/app/data
+
+volumes:
+  postgres_data:
+    driver: local
+  app_data:
+    driver: local
