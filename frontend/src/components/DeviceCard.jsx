@@ -157,27 +157,27 @@ export default function DeviceCard({ device, onUpdate }) {
     return (
         <div
             onClick={handleCardClick}
-            className={`bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-pointer h-full flex flex-col ${!device.is_online ? 'opacity-60' : ''
+            className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all cursor-pointer h-full flex flex-col ${!device.is_online ? 'opacity-60' : ''
                 }`}
         >
             {/* Header */}
-            <div className="p-4 border-b border-gray-100">
+            <div className="p-4 border-b border-gray-100 dark:border-gray-700 transition-colors duration-200">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-base font-semibold text-gray-900 truncate">
+                            <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
                                 {formatName(device.name) || device.mqtt_topic}
                             </h3>
                             {device.protected && <Shield className="w-4 h-4 text-blue-500 flex-shrink-0" title="Protected" />}
                         </div>
                         {device.name && device.name !== device.mqtt_topic && (
-                            <p className="text-xs text-gray-500 truncate">{device.mqtt_topic}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{device.mqtt_topic}</p>
                         )}
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                         <button
                             onClick={toggleConfig}
-                            className="p-1.5 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
+                            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                             title="Settings"
                         >
                             <Settings className="w-4 h-4" />
@@ -202,47 +202,47 @@ export default function DeviceCard({ device, onUpdate }) {
                 {isConfiguring ? (
                     <div onClick={e => e.stopPropagation()} className="space-y-4">
                         <div>
-                            <label className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-gray-50 p-2 rounded">
+                            <label className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded transition-colors">
                                 <input
                                     type="checkbox"
                                     checked={isProtected}
                                     onChange={(e) => setIsProtected(e.target.checked)}
-                                    className="rounded text-blue-500 focus:ring-blue-500"
+                                    className="rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                                 />
-                                <span className="font-medium flex items-center gap-1">
+                                <span className="font-medium flex items-center gap-1 text-gray-900 dark:text-gray-100">
                                     <Shield className="w-3 h-3" /> Protected Mode
                                 </span>
                             </label>
-                            <p className="text-xs text-gray-500 ml-8">Requires confirmation to turn OFF.</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 ml-8">Requires confirmation to turn OFF.</p>
                         </div>
 
                         <div>
-                            <h4 className="text-sm font-semibold mb-2">Select Sensors (Max 3)</h4>
+                            <h4 className="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">Select Sensors (Max 3)</h4>
                             <div className="max-h-32 overflow-y-auto space-y-1">
                                 {availableSensors.map(key => (
-                                    <label key={key} className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-gray-50 p-1.5 rounded">
+                                    <label key={key} className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-1.5 rounded transition-colors">
                                         <input
                                             type="checkbox"
                                             checked={selectedSensors.includes(key)}
                                             onChange={() => handleSensorToggle(key)}
                                             disabled={!selectedSensors.includes(key) && selectedSensors.length >= 3}
-                                            className="rounded text-blue-500 focus:ring-blue-500"
+                                            className="rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                                         />
-                                        <span className="truncate text-xs" title={key}>{key}</span>
+                                        <span className="truncate text-xs text-gray-700 dark:text-gray-300" title={key}>{key}</span>
                                     </label>
                                 ))}
                             </div>
                         </div>
-                        <div className="flex justify-end gap-2 pt-2 border-t">
+                        <div className="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
                             <button
                                 onClick={toggleConfig}
-                                className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md"
+                                className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={saveConfig}
-                                className="px-3 py-1.5 text-sm bg-blue-500 text-white hover:bg-blue-600 rounded-md flex items-center gap-1"
+                                className="px-3 py-1.5 text-sm bg-blue-500 text-white hover:bg-blue-600 rounded-md flex items-center gap-1 transition-colors"
                             >
                                 <Save className="w-3 h-3" /> Save
                             </button>
@@ -265,7 +265,7 @@ export default function DeviceCard({ device, onUpdate }) {
 
                                     return (
                                         <div key={channel} className="flex flex-col gap-1.5">
-                                            <span className="text-xs font-medium text-gray-600 truncate" title={displayLabel}>
+                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate" title={displayLabel}>
                                                 {displayLabel}
                                             </span>
                                             <div className="flex items-center gap-1.5">
@@ -273,10 +273,10 @@ export default function DeviceCard({ device, onUpdate }) {
                                                     onClick={(e) => handleToggle(e, channel)}
                                                     disabled={!device.is_online}
                                                     className={`flex-1 flex items-center justify-center px-3 py-2.5 rounded-md transition-all text-sm font-medium min-h-[40px] ${hasTimer
-                                                            ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-sm'
-                                                            : isChannelOn
-                                                                ? 'bg-green-500 hover:bg-green-600 text-white shadow-sm'
-                                                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                                                        ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-sm'
+                                                        : isChannelOn
+                                                            ? 'bg-green-500 hover:bg-green-600 text-white shadow-sm'
+                                                            : 'bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
                                                         } disabled:opacity-40 disabled:cursor-not-allowed`}
                                                 >
                                                     {hasTimer ? (
@@ -311,7 +311,7 @@ export default function DeviceCard({ device, onUpdate }) {
 
                         {/* Metrics */}
                         {device.dashboard_config?.visible_sensors?.length > 0 && (
-                            <div className="mt-auto pt-3 border-t border-gray-100">
+                            <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 transition-colors duration-200">
                                 <div className="flex items-center justify-around gap-2">
                                     {device.dashboard_config.visible_sensors.map(sensorKey => {
                                         const findValue = (obj, key) => {
@@ -347,8 +347,8 @@ export default function DeviceCard({ device, onUpdate }) {
 
                                             return (
                                                 <div key={sensorKey} className="flex flex-col items-center" title={`${sensorKey}: ${value}`}>
-                                                    <span className="text-base font-bold text-gray-900">{displayValue}</span>
-                                                    <span className="text-xs text-gray-500 uppercase tracking-wide">{displayKey}</span>
+                                                    <span className="text-base font-bold text-gray-900 dark:text-white">{displayValue}</span>
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{displayKey}</span>
                                                 </div>
                                             );
                                         }
@@ -368,20 +368,20 @@ export default function DeviceCard({ device, onUpdate }) {
                     onClick={handleCancelToggle}
                 >
                     <div
-                        className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl"
+                        className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4 shadow-xl border border-gray-200 dark:border-gray-700"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center gap-3 mb-4">
                             <Shield className="w-6 h-6 text-yellow-500" />
-                            <h3 className="text-lg font-semibold text-gray-900">Confirm Action</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Confirm Action</h3>
                         </div>
-                        <p className="text-gray-700 mb-6">
+                        <p className="text-gray-700 dark:text-gray-300 mb-6">
                             Are you sure you want to turn OFF <strong>{pendingToggle}</strong> on <strong>{device.name || device.mqtt_topic}</strong>?
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button
                                 onClick={handleCancelToggle}
-                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             >
                                 Cancel
                             </button>

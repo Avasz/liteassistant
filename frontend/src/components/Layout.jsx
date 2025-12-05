@@ -7,6 +7,7 @@ export default function Layout({ children }) {
     const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login');
@@ -25,8 +26,8 @@ export default function Layout({ children }) {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <nav className="fixed top-0 w-full z-50 bg-white shadow-sm border-b border-gray-200">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+            <nav className="fixed top-0 w-full z-50 bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-colors duration-200">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         {/* Desktop Navigation */}
@@ -80,7 +81,7 @@ export default function Layout({ children }) {
 
                 {/* Mobile Menu Dropdown */}
                 {isMobileMenuOpen && (
-                    <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+                    <div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg">
                         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                             {navItems.map((item) => (
                                 <Link

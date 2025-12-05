@@ -105,7 +105,7 @@ export default function Dashboard() {
     return (
         <div className="space-y-6">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 transition-colors duration-200">
                 <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
@@ -113,7 +113,7 @@ export default function Dashboard() {
                         placeholder="Search devices..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors duration-200"
                     />
                 </div>
 
@@ -130,8 +130,8 @@ export default function Dashboard() {
                             key={filter.id}
                             onClick={() => setFilterStatus(filter.id)}
                             className={`px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${filterStatus === filter.id
-                                ? 'bg-blue-100 text-blue-700'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
                                 }`}
                         >
                             {filter.label}
@@ -142,12 +142,12 @@ export default function Dashboard() {
 
             {/* Device Grid */}
             {devices.length === 0 ? (
-                <div className="bg-white p-12 rounded-lg shadow-sm text-center border border-gray-100">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                        <Search className="w-8 h-8 text-gray-400" />
+                <div className="bg-white dark:bg-gray-800 p-12 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 transition-colors duration-200">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
+                        <Search className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No devices found</h3>
-                    <p className="text-gray-500">Configure MQTT settings to start discovering devices.</p>
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No devices found</h3>
+                    <p className="text-gray-500 dark:text-gray-400">Configure MQTT settings to start discovering devices.</p>
                 </div>
             ) : filteredDevices.length === 0 ? (
                 <div className="text-center py-12">

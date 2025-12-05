@@ -109,16 +109,16 @@ export default function Automations() {
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800 flex items-center">
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-white flex items-center">
                     <Zap className="w-8 h-8 mr-3 text-yellow-500" />
                     Automations
                 </h1>
                 <button
                     onClick={() => setShowForm(true)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center transition-colors"
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 md:px-4 rounded-md flex items-center transition-colors"
                 >
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Automation
+                    <Plus className="w-5 h-5 md:mr-2" />
+                    <span className="hidden md:inline">New Automation</span>
                 </button>
             </div>
 
@@ -140,9 +140,9 @@ export default function Automations() {
 
             <div className="space-y-4">
                 {automations.length === 0 ? (
-                    <div className="bg-white p-8 rounded-lg shadow text-center">
-                        <p className="text-gray-600">No automations configured yet.</p>
-                        <p className="text-sm text-gray-500 mt-2">
+                    <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow text-center border border-gray-100 dark:border-gray-700 transition-colors duration-200">
+                        <p className="text-gray-600 dark:text-gray-300">No automations configured yet.</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                             Click "New Automation" to create your first automation rule.
                         </p>
                     </div>
@@ -150,31 +150,31 @@ export default function Automations() {
                     automations.map((automation) => (
                         <div
                             key={automation.id}
-                            className={`bg-white rounded-lg shadow-md p-6 ${!automation.enabled ? 'opacity-60' : ''
+                            className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-100 dark:border-gray-700 transition-colors duration-200 ${!automation.enabled ? 'opacity-60' : ''
                                 }`}
                         >
                             <div className="flex justify-between items-start">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <h3 className="text-lg font-semibold text-gray-800">
+                                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                                             {automation.name}
                                         </h3>
                                         <span
                                             className={`px-2 py-1 rounded text-xs font-medium ${automation.enabled
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-gray-100 text-gray-600'
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                                : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
                                                 }`}
                                         >
                                             {automation.enabled ? 'Enabled' : 'Disabled'}
                                         </span>
                                     </div>
-                                    <div className="mt-2 text-sm text-gray-600 space-y-1">
+                                    <div className="mt-2 text-sm text-gray-600 dark:text-gray-300 space-y-1">
                                         <p>
-                                            <span className="font-medium">When:</span>{' '}
+                                            <span className="font-medium text-gray-700 dark:text-gray-200">When:</span>{' '}
                                             {getTriggerDescription(automation)}
                                         </p>
                                         <p>
-                                            <span className="font-medium">Then:</span>{' '}
+                                            <span className="font-medium text-gray-700 dark:text-gray-200">Then:</span>{' '}
                                             {getActionDescription(automation)}
                                         </p>
                                     </div>
@@ -183,8 +183,8 @@ export default function Automations() {
                                     <button
                                         onClick={() => handleToggle(automation.id)}
                                         className={`p-2 rounded transition-colors ${automation.enabled
-                                            ? 'text-green-600 hover:bg-green-50'
-                                            : 'text-gray-400 hover:bg-gray-50'
+                                            ? 'text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30'
+                                            : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700'
                                             }`}
                                         title={automation.enabled ? 'Disable' : 'Enable'}
                                     >
@@ -192,28 +192,28 @@ export default function Automations() {
                                     </button>
                                     <button
                                         onClick={() => handleEdit(automation)}
-                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                        className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                                         title="Edit automation"
                                     >
                                         <Pencil className="w-5 h-5" />
                                     </button>
                                     <button
                                         onClick={() => handleTest(automation.id, automation.name)}
-                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                        className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                                         title="Test automation"
                                     >
                                         <Play className="w-5 h-5" />
                                     </button>
                                     <button
                                         onClick={() => setSelectedAutomation(automation)}
-                                        className="p-2 text-purple-600 hover:bg-purple-50 rounded transition-colors"
+                                        className="p-2 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors"
                                         title="View execution history"
                                     >
                                         <History className="w-5 h-5" />
                                     </button>
                                     <button
                                         onClick={() => handleDelete(automation.id)}
-                                        className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                                        className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                                         title="Delete automation"
                                     >
                                         <Trash2 className="w-5 h-5" />
@@ -232,17 +232,17 @@ export default function Automations() {
                     onClick={() => setShowDeleteModal(false)}
                 >
                     <div
-                        className="bg-white rounded-lg p-6 max-w-md mx-4 shadow-xl"
+                        className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4 shadow-xl border border-gray-200 dark:border-gray-700"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Confirm Deletion</h3>
-                        <p className="text-gray-700 mb-6">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Confirm Deletion</h3>
+                        <p className="text-gray-700 dark:text-gray-300 mb-6">
                             Are you sure you want to delete this automation? This action cannot be undone.
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button
                                 onClick={() => setShowDeleteModal(false)}
-                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                             >
                                 Cancel
                             </button>

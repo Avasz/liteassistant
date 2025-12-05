@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { User, Lock, Save, CheckCircle, AlertCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Profile = () => {
     const [user, setUser] = useState({ username: '', password: '' });
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState({ type: '', message: '' });
+    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         fetchProfile();
@@ -59,13 +61,30 @@ const Profile = () => {
 
             {status.message && (
                 <div className={`mb-6 p-4 rounded-lg flex items-center gap-2 ${status.type === 'success' ? 'bg-green-100 text-green-700' :
-                        status.type === 'error' ? 'bg-red-100 text-red-700' :
-                            'bg-blue-100 text-blue-700'
+                    status.type === 'error' ? 'bg-red-100 text-red-700' :
+                        'bg-blue-100 text-blue-700'
                     }`}>
                     {status.type === 'success' ? <CheckCircle size={20} /> : <AlertCircle size={20} />}
                     {status.message}
                 </div>
             )}
+
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden p-6 mb-6">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Appearance</h2>
+                <div className="flex items-center justify-between">
+                    <span className="text-gray-700 dark:text-gray-300">Dark Mode</span>
+                    <button
+                        onClick={toggleTheme}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${theme === 'dark' ? 'bg-blue-600' : 'bg-gray-200'
+                            }`}
+                    >
+                        <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+                                }`}
+                        />
+                    </button>
+                </div>
+            </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
