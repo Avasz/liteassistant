@@ -54,6 +54,7 @@ docker-compose ps
 The application will be available at:
 - **Web Interface**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/docs
+- **MCP Server**: http://localhost:8101/sse (For AI Agent integrations via SSE)
 
 ### 4. Create Initial User
 
@@ -230,6 +231,16 @@ MQTT settings are configured through the web interface:
 1. Navigate to **Settings**
 2. Enter your MQTT broker details
 3. Save and test the connection
+
+### MCP (Model Context Protocol) Server
+
+LiteAssistant runs an MCP sidecar server by default on port `8101`. This allows compatible AI Assistants (like Claude Desktop, PicoClaw, etc.) to securely interact with your home automation. 
+
+To connect an AI agent to LiteAssistant:
+- **Type/Transport**: `sse`
+- **URL**: `http://<your-server-ip>:8101/sse`
+
+Once connected, your AI agents will be able to query sensor data and manage your switches via the exposed MCP tools.
 
 ## Troubleshooting
 

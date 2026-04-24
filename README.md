@@ -17,6 +17,7 @@ LiteAssistant is a lightweight home automation dashboard designed to control and
 *   **Notifications**: Get notified via Telegram or Ntfy when events occur.
 *   **Dashboard**: customizable dashboard to view your most important devices.
 *   **Profile Management**: Update your username and password.
+*   **AI Agent Integration (MCP)**: Includes a Model Context Protocol (MCP) sidecar server exposing your home automation to AI agents (like Claude Desktop or PicoClaw). AI can read sensor data, discover devices, control multi-channel relays, and create interval schedules natively.
 
 ![Screenshot](image.png)
 ## Prerequisites
