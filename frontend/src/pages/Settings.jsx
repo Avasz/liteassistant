@@ -12,6 +12,7 @@ export default function Settings() {
         custom_topics: []
     });
     const [message, setMessage] = useState(null);
+    const [discoveryMessage, setDiscoveryMessage] = useState(null);
     const [deviceCount, setDeviceCount] = useState(0);
     const [devices, setDevices] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
@@ -85,7 +86,7 @@ export default function Settings() {
 
     const handleTriggerDiscovery = async () => {
         setIsDiscovering(true);
-        setMessage(null);
+        setDiscoveryMessage(null);
         const initialCount = devices.length;
 
         try {
@@ -101,12 +102,12 @@ export default function Settings() {
                     clearInterval(interval);
                     setIsDiscovering(false);
                     if (currentDevices.length > initialCount) {
-                        setMessage({ 
+                        setDiscoveryMessage({ 
                             type: 'success', 
                             text: `Discovery complete! Found ${currentDevices.length - initialCount} new devices.` 
                         });
                     } else {
-                        setMessage({ 
+                        setDiscoveryMessage({ 
                             type: 'info', 
                             text: 'Discovery triggered. No new devices found yet.' 
                         });
@@ -116,7 +117,7 @@ export default function Settings() {
 
         } catch (error) {
             setIsDiscovering(false);
-            setMessage({ 
+            setDiscoveryMessage({ 
                 type: 'error', 
                 text: 'Failed to trigger discovery: ' + (error.response?.data?.detail || error.message) 
             });
@@ -283,6 +284,19 @@ export default function Settings() {
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+                        {discoveryMessage && (
+                            <div className={`flex items-center p-3 mb-4 rounded-lg animate-in slide-in-from-top-2 duration-300 ${
+                                discoveryMessage.type === 'success' ? 'bg-green-50 text-green-800 border border-green-100 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800/30' : 
+                                discoveryMessage.type === 'error' ? 'bg-red-50 text-red-800 border border-red-100 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800/30' :
+                                'bg-blue-50 text-blue-800 border border-blue-100 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800/30'
+                            }`}>
+                                {discoveryMessage.type === 'success' ? <CheckCircle2 className="w-5 h-5 mr-3 shrink-0" /> : 
+                                 discoveryMessage.type === 'error' ? <AlertCircle className="w-5 h-5 mr-3 shrink-0" /> :
+                                 <RefreshCw className="w-5 h-5 mr-3 shrink-0 animate-spin" />}
+                                <span className="text-sm font-medium">{discoveryMessage.text}</span>
+                            </div>
+                        )}
+
                         <div className="flex items-center justify-between mb-4">
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Discovered devices will automatically appear here.

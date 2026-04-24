@@ -182,21 +182,24 @@ class MQTTService:
                             friendly_name = str(friendly_name_val)
                         ip_address = status_net.get("IPAddress")
                         
+                        merged_attrs = old_attributes.copy()
+                        merged_attrs.update(data)
+                        
                         updated_device = await crud.create_or_update_device(db, {
                             "mqtt_topic": device_topic,
                             "name": friendly_name,
                             "ip_address": ip_address,
-                            "is_online": True,
-                            "attributes": data
+                            "attributes": merged_attrs
                         })
 
                     # 3. STATE - Telemetry (Power, Wifi, etc.)
                     elif prefix == "tele" and suffix == "STATE":
                         data = json.loads(payload)
+                        merged_attrs = old_attributes.copy()
+                        merged_attrs.update(data)
                         updated_device = await crud.create_or_update_device(db, {
                             "mqtt_topic": device_topic,
-                            "is_online": True,
-                            "attributes": data
+                            "attributes": merged_attrs
                         })
 
                     # 4. SENSOR - Sensor Data
@@ -209,7 +212,6 @@ class MQTTService:
                         
                         updated_device = await crud.create_or_update_device(db, {
                             "mqtt_topic": device_topic,
-                            "is_online": True,
                             "attributes": merged_attrs
                         })
                         
