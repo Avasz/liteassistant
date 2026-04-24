@@ -44,11 +44,12 @@ async def list_devices() -> str:
     return json.dumps(result, indent=2)
 
 @mcp.tool()
-async def toggle_device(device_id: int, state: str) -> str:
+async def toggle_device(device_id: int, state: str, channel: int = None) -> str:
     """
-    Sends the MQTT command to flip a switch.
+    Sends the MQTT command to flip a switch on a device.
     :param device_id: The ID of the device to toggle.
     :param state: 'ON', 'OFF', or 'TOGGLE'.
+    :param channel: Optional relay channel number (e.g. 1 to 8). If a device has multiple switches (like 'waterswitch'), specify the channel to target a specific relay. Defaults to base POWER.
     """
     await ensure_services()
     async with AsyncSessionLocal() as db:
@@ -60,22 +61,32 @@ async def toggle_device(device_id: int, state: str) -> str:
     if state not in ["ON", "OFF", "TOGGLE"]:
         return "Error: state must be ON, OFF, or TOGGLE."
         
-    topic = f"cmnd/{device.mqtt_topic}/POWER"
+    power_suffix = f"POWER{channel}" if channel and channel > 1 else "POWER"
+    topic = f"cmnd/{device.mqtt_topic}/{power_suffix}"
+    
     await mqtt_service.publish(topic, state)
-    return f"Sent {state} to {device.name or device.mqtt_topic} ({topic})"
+    return f"Sent {state} to {device.name or device.mqtt_topic} channel {channel or 1} ({topic})"
 
 @mcp.tool()
 async def get_sensor_data(device_id: int) -> str:
-    """Fetches current sensor readings and state for a device."""
+    """Fetches current sensor readings and all available power channel states for a device."""
     await ensure_services()
     async with AsyncSessionLocal() as db:
         device = await crud.get_device(db, device_id)
         if not device:
             return f"Error: Device {device_id} not found."
             
+    # Extract power states to surface them easily
+    power_states = {}
+    if isinstance(device.attributes, dict):
+        for key, value in device.attributes.items():
+            if key.startswith("POWER"):
+                power_states[key] = value
+                
     return json.dumps({
         "device": device.name or device.mqtt_topic,
         "is_online": device.is_online,
+        "power_states": power_states,
         "attributes": device.attributes
     }, indent=2)
 
