@@ -1,0 +1,28 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system build dependencies (gcc) and PostgreSQL client
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies from the main backend
+COPY backend/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install FastMCP and uvicorn for the sidecar
+RUN pip install --no-cache-dir fastmcp uvicorn[standard] httpx sse-starlette
+
+# Copy the backend source code (needed for DB models and logic)
+COPY backend/ ./backend/
+
+# Copy the MCP server entrypoint
+COPY mcp_server.py .
+
+EXPOSE 8101
+
+ENV PYTHONUNBUFFERED=1
+
+CMD ["python", "mcp_server.py"]

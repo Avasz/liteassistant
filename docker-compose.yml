@@ -45,6 +45,24 @@ services:
     volumes:
       - app_data:/app/data
 
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcp
+    container_name: liteassistant-mcp
+    env_file:
+      - .env
+    environment:
+      - TZ=${TZ:-UTC}
+    ports:
+      - "8101:8101"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      app:
+        condition: service_started
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
