@@ -12,7 +12,7 @@ from backend.mqtt_service import mqtt_service
 from backend.notification_service import notification_service
 
 # Initialize FastMCP Server
-mcp = FastMCP("LiteAssistantMCP", description="MCP Server for Lite Home Assistant App")
+mcp = FastMCP("LiteAssistantMCP")
 
 _services_started = False
 
