@@ -153,4 +153,4 @@ async def send_notification(message: str) -> str:
 
 if __name__ == "__main__":
     # Start the FastMCP server with SSE transport on port 8101
-    mcp.run(transport="sse", port=8101)
+    mcp.run(transport="sse", host="0.0.0.0", port=8101)
