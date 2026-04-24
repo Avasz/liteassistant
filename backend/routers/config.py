@@ -25,6 +25,18 @@ async def update_mqtt_config(config: schemas.MQTTConfigCreate, db: AsyncSession 
     await mqtt_service.restart()
     
     return updated_config
+    
+@router.post("/test")
+async def test_mqtt_config(config: schemas.MQTTConfigBase):
+    success, message = await mqtt_service.test_connection(
+        config.broker_host,
+        config.broker_port,
+        config.username,
+        config.password
+    )
+    if not success:
+        raise HTTPException(status_code=400, detail=message)
+    return {"status": "success", "message": message}
 
 @router.post("/discover")
 async def trigger_discovery(db: AsyncSession = Depends(database.get_db)):

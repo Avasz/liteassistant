@@ -116,12 +116,12 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-                    <h2 className="text-xl font-bold text-gray-900">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700 transition-colors duration-200">
+                <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center z-10">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         {initialData ? 'Edit Schedule' : 'New Schedule'}
                     </h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
@@ -129,14 +129,14 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     {/* Name */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Schedule Name
                         </label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             placeholder="e.g., Morning Lights"
                             required
                         />
@@ -144,13 +144,13 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
 
                     {/* Device */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Device
                         </label>
                         <select
                             value={formData.device_id}
                             onChange={(e) => setFormData({ ...formData, device_id: e.target.value, switch_name: 'POWER' })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             required
                         >
                             <option value="">Select device...</option>
@@ -165,13 +165,13 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                     {/* Switch */}
                     {formData.device_id && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Switch
                             </label>
                             <select
                                 value={formData.switch_name}
                                 onChange={(e) => setFormData({ ...formData, switch_name: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 {getPowerChannels().map(channel => (
                                     <option key={channel} value={channel}>{channel}</option>
@@ -182,13 +182,13 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
 
                     {/* Schedule Type */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Schedule Type
                         </label>
                         <select
                             value={formData.schedule_type}
                             onChange={(e) => setFormData({ ...formData, schedule_type: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                         >
                             <option value="once">One-time</option>
                             <option value="daily">Daily</option>
@@ -199,9 +199,9 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
 
                     {/* Interval Configuration */}
                     {formData.schedule_type === 'interval' && (
-                        <div className="space-y-4 p-4 bg-gray-50 rounded-md border border-gray-200">
+                        <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-md border border-gray-200 dark:border-gray-600">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Run Every
                                 </label>
                                 <div className="flex gap-2">
@@ -209,14 +209,15 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                                         type="number"
                                         min="1"
                                         value={formData.interval_value}
-                                        onChange={(e) => setFormData({ ...formData, interval_value: e.target.value })}
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        onChange={(e) => setFormData({ ...formData, interval_value: parseInt(e.target.value) || 0 })}
+                                        onFocus={(e) => e.target.select()}
+                                        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     <select
                                         value={formData.interval_unit}
                                         onChange={(e) => setFormData({ ...formData, interval_unit: e.target.value })}
-                                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="seconds">Seconds</option>
                                         <option value="minutes">Minutes</option>
@@ -225,12 +226,12 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                                 </div>
                             </div>
 
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                                 Schedule will run repeatedly aligned to midnight (00:00).
                             </p>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Stop Schedule After (Total Duration)
                                 </label>
                                 <div className="flex gap-2">
@@ -238,20 +239,21 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                                         type="number"
                                         min="0"
                                         value={formData.total_duration_value}
-                                        onChange={(e) => setFormData({ ...formData, total_duration_value: e.target.value })}
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        onChange={(e) => setFormData({ ...formData, total_duration_value: parseInt(e.target.value) || 0 })}
+                                        onFocus={(e) => e.target.select()}
+                                        className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                                     />
                                     <select
                                         value={formData.total_duration_unit}
                                         onChange={(e) => setFormData({ ...formData, total_duration_unit: e.target.value })}
-                                        className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="seconds">Seconds</option>
                                         <option value="minutes">Minutes</option>
                                         <option value="hours">Hours</option>
                                     </select>
                                 </div>
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     0 = Indefinite. Example: Run every 10 seconds for 5 minutes = 30 runs.
                                 </p>
                             </div>
@@ -261,14 +263,14 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                     {/* Time (not for interval) */}
                     {formData.schedule_type !== 'interval' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Time
                             </label>
                             <input
                                 type="time"
                                 value={formData.time}
                                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                                 required
                             />
                         </div>
@@ -277,14 +279,14 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                     {/* Date (for one-time) */}
                     {formData.schedule_type === 'once' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Date
                             </label>
                             <input
                                 type="date"
                                 value={formData.date}
                                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                                 required
                             />
                         </div>
@@ -293,7 +295,7 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                     {/* Days (for weekly) */}
                     {formData.schedule_type === 'weekly' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Days of Week
                             </label>
                             <div className="flex gap-2">
@@ -304,7 +306,7 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                                         onClick={() => toggleDay(day.value)}
                                         className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${formData.days_of_week.includes(day.value)
                                             ? 'bg-blue-500 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                                             }`}
                                     >
                                         {day.label}
@@ -316,13 +318,13 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
 
                     {/* Action */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Action
                         </label>
                         <select
                             value={formData.action}
                             onChange={(e) => setFormData({ ...formData, action: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                         >
                             <option value="ON">Turn ON</option>
                             <option value="OFF">Turn OFF</option>
@@ -332,7 +334,7 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
 
                     {/* Duration */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             {formData.schedule_type === 'interval' ? 'Turn On For' : 'Turn Off After (Duration)'}
                         </label>
                         <div className="flex gap-2">
@@ -340,30 +342,31 @@ export default function ScheduleForm({ onClose, onSuccess, initialData, devices 
                                 type="number"
                                 min="0"
                                 value={formData.duration}
-                                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })}
+                                onFocus={(e) => e.target.select()}
+                                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             />
                             <select
                                 value={formData.duration_unit}
                                 onChange={(e) => setFormData({ ...formData, duration_unit: e.target.value })}
-                                className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 <option value="seconds">Seconds</option>
                                 <option value="minutes">Minutes</option>
                                 <option value="hours">Hours</option>
                             </select>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             0 = Indefinite (stays on until manually turned off)
                         </p>
                     </div>
 
                     {/* Submit */}
-                    <div className="flex gap-3 pt-4 border-t">
+                    <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                            className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                         >
                             Cancel
                         </button>

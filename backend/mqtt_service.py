@@ -301,6 +301,24 @@ class MQTTService:
         except Exception as e:
             logger.error(f"Error handling message {topic}: {e}")
 
+    async def test_connection(self, host: str, port: int, username: Optional[str] = None, password: Optional[str] = None):
+        try:
+            logger.info(f"Testing MQTT connection to {host}:{port}...")
+            async with aiomqtt.Client(
+                hostname=host,
+                port=port,
+                username=username,
+                password=password,
+                timeout=5
+            ) as client:
+                return True, "Successfully connected to MQTT broker"
+        except aiomqtt.MqttError as e:
+            logger.error(f"MQTT test connection failed: {e}")
+            return False, f"Connection failed: {str(e)}"
+        except Exception as e:
+            logger.error(f"MQTT test connection unexpected error: {e}")
+            return False, f"Unexpected error: {str(e)}"
+
     async def publish(self, topic: str, payload: str):
         if self.client and self.is_connected:
             await self.client.publish(topic, payload)

@@ -83,11 +83,11 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700 transition-colors duration-200">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">{initialData ? 'Edit Automation' : 'Create Automation'}</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{initialData ? 'Edit Automation' : 'Create Automation'}</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
@@ -95,31 +95,31 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Name */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Automation Name
                         </label>
                         <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             placeholder="e.g., Turn on pump when button pressed"
                             required
                         />
                     </div>
 
                     {/* Trigger Section */}
-                    <div className="border-t pt-4">
-                        <h3 className="text-lg font-semibold mb-3">When (Trigger)</h3>
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">When (Trigger)</h3>
 
                         <div className="mb-3">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Trigger Type
                             </label>
                             <select
                                 value={formData.trigger_type}
                                 onChange={(e) => handleTriggerTypeChange(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 <option value="mqtt">MQTT Topic</option>
                                 <option value="time">Time Schedule</option>
@@ -129,41 +129,41 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
 
                         {/* MQTT Trigger */}
                         {formData.trigger_type === 'mqtt' && (
-                            <div className="space-y-3 bg-gray-50 p-4 rounded">
+                            <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded border border-gray-200 dark:border-gray-600">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         MQTT Topic Pattern
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.trigger_value.topic || ''}
                                         onChange={(e) => updateTriggerValue('topic', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         placeholder="e.g., stat/button/RESULT"
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">Supports wildcards: + (single level), # (multi-level)</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Supports wildcards: + (single level), # (multi-level)</p>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         JSON Path (optional)
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.trigger_value.payload_json_path || ''}
                                         onChange={(e) => updateTriggerValue('payload_json_path', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         placeholder="e.g., POWER"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Expected Value (optional)
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.trigger_value.payload_json_value || ''}
                                         onChange={(e) => updateTriggerValue('payload_json_value', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         placeholder="e.g., ON"
                                     />
                                 </div>
@@ -172,10 +172,10 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
 
                         {/* Time Trigger */}
                         {formData.trigger_type === 'time' && (
-                            <div className="space-y-3 bg-gray-50 p-4 rounded">
+                            <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded border border-gray-200 dark:border-gray-600">
                                 <div className="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Hour (0-23)
                                         </label>
                                         <input
@@ -183,12 +183,13 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                             min="0"
                                             max="23"
                                             value={formData.trigger_value.hour || ''}
-                                            onChange={(e) => updateTriggerValue('hour', parseInt(e.target.value))}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                            onChange={(e) => updateTriggerValue('hour', parseInt(e.target.value) || 0)}
+                                            onFocus={(e) => e.target.select()}
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Minute (0-59)
                                         </label>
                                         <input
@@ -196,8 +197,9 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                             min="0"
                                             max="59"
                                             value={formData.trigger_value.minute || ''}
-                                            onChange={(e) => updateTriggerValue('minute', parseInt(e.target.value))}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                            onChange={(e) => updateTriggerValue('minute', parseInt(e.target.value) || 0)}
+                                            onFocus={(e) => e.target.select()}
+                                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         />
                                     </div>
                                 </div>
@@ -206,15 +208,15 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
 
                         {/* Device State Trigger */}
                         {formData.trigger_type === 'device_state' && (
-                            <div className="space-y-3 bg-gray-50 p-4 rounded">
+                            <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded border border-gray-200 dark:border-gray-600">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Device
                                     </label>
                                     <select
                                         value={formData.trigger_value.device_id || ''}
                                         onChange={(e) => updateTriggerValue('device_id', parseInt(e.target.value))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="">Select device...</option>
                                         {devices.map(device => (
@@ -228,13 +230,13 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                 {formData.trigger_value.device_id && (
                                     <>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                 Attribute
                                             </label>
                                             <select
                                                 value={formData.trigger_value.attribute || ''}
                                                 onChange={(e) => updateTriggerValue('attribute', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                             >
                                                 <option value="">Select attribute...</option>
                                                 {/* Dynamic attributes from selected device */}
@@ -252,13 +254,13 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                 Comparison Operator
                                             </label>
                                             <select
                                                 value={formData.trigger_value.operator || '=='}
                                                 onChange={(e) => updateTriggerValue('operator', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                             >
                                                 <option value="==">Equals (==)</option>
                                                 <option value="!=">Not Equals (!=)</option>
@@ -267,35 +269,36 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                                 <option value=">">Greater Than (&gt;)</option>
                                                 <option value=">=">Greater Than or Equal (&gt;=)</option>
                                             </select>
-                                            <p className="text-xs text-gray-500 mt-1">
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                                 For numeric values, use comparison operators. For text, use equals or not equals.
                                             </p>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                 Value
                                             </label>
                                             <input
                                                 type="text"
                                                 value={formData.trigger_value.value || ''}
                                                 onChange={(e) => updateTriggerValue('value', e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                                 placeholder="e.g., ON or 25"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                 For Duration (minutes)
                                             </label>
                                             <input
                                                 type="number"
                                                 min="0"
                                                 value={formData.trigger_value.for_duration || 0}
-                                                onChange={(e) => updateTriggerValue('for_duration', parseInt(e.target.value))}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                                onChange={(e) => updateTriggerValue('for_duration', parseInt(e.target.value) || 0)}
+                                                onFocus={(e) => e.target.select()}
+                                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                                 placeholder="0 for immediate"
                                             />
-                                            <p className="text-xs text-gray-500 mt-1">
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                                 If set &gt; 0, the device must stay in this state for this many minutes before triggering.
                                             </p>
                                         </div>
@@ -306,17 +309,17 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                     </div>
 
                     {/* Action Section */}
-                    <div className="border-t pt-4">
-                        <h3 className="text-lg font-semibold mb-3">Then (Action)</h3>
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Then (Action)</h3>
 
                         <div className="mb-3">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                 Action Type
                             </label>
                             <select
                                 value={formData.action_type}
                                 onChange={(e) => handleActionTypeChange(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             >
                                 <option value="device_command">Device Command</option>
                                 <option value="mqtt_publish">MQTT Publish</option>
@@ -325,15 +328,15 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
 
                         {/* Device Command Action */}
                         {formData.action_type === 'device_command' && (
-                            <div className="space-y-3 bg-gray-50 p-4 rounded">
+                            <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded border border-gray-200 dark:border-gray-600">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Device
                                     </label>
                                     <select
                                         value={formData.action_value.device_id || ''}
                                         onChange={(e) => updateActionValue('device_id', parseInt(e.target.value))}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="">Select device...</option>
                                         {devices.map(device => (
@@ -344,13 +347,13 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Command
                                     </label>
                                     <select
                                         value={formData.action_value.command || ''}
                                         onChange={(e) => updateActionValue('command', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="">Select command...</option>
                                         <option value="POWER">Power (POWER)</option>
@@ -360,13 +363,13 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Payload
                                     </label>
                                     <select
                                         value={formData.action_value.payload || ''}
                                         onChange={(e) => updateActionValue('payload', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                     >
                                         <option value="">Select...</option>
                                         <option value="ON">ON</option>
@@ -379,28 +382,28 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
 
                         {/* MQTT Publish Action */}
                         {formData.action_type === 'mqtt_publish' && (
-                            <div className="space-y-3 bg-gray-50 p-4 rounded">
+                            <div className="space-y-3 bg-gray-50 dark:bg-gray-700/50 p-4 rounded border border-gray-200 dark:border-gray-600">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Topic
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.action_value.topic || ''}
                                         onChange={(e) => updateActionValue('topic', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         placeholder="e.g., cmnd/pump/POWER"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         Payload
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.action_value.payload || ''}
                                         onChange={(e) => updateActionValue('payload', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
                                         placeholder="e.g., ON"
                                     />
                                 </div>
@@ -419,7 +422,7 @@ export default function AutomationForm({ onClose, onSuccess, initialData }) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-6 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 rounded-md transition-colors"
+                            className="px-6 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 py-2 rounded-md transition-colors"
                         >
                             Cancel
                         </button>
