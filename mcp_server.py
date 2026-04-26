@@ -1,6 +1,6 @@
 import json
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastmcp import FastMCP
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -161,6 +161,32 @@ async def send_notification(message: str) -> str:
     await ensure_services()
     await notification_service.notify("mcp_event", message)
     return "Notification triggered via configured providers."
+
+@mcp.tool()
+async def set_switch_timer(device_topic: str, switch: str, duration_minutes: int) -> str:
+    """Use this to set a hardware-backed timer in the LiteAssistant database. The backend TimerService will handle the actual OFF command."""
+    await ensure_services()
+    async with AsyncSessionLocal() as db:
+        device = await crud.get_device_by_topic(db, device_topic)
+        if not device:
+            return f"Error: Device {device_topic} not found."
+            
+        now = datetime.now(timezone.utc)
+        end_time = now + timedelta(minutes=duration_minutes)
+        end_time_str = end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        
+        # Merge existing timers
+        timers = dict(device.active_timers or {})
+        timers[switch] = end_time_str
+        
+        # Update using crud.create_or_update_device
+        await crud.create_or_update_device(db, {
+            "mqtt_topic": device_topic,
+            "active_timers": timers
+        })
+        
+    return f"Set timer for {device_topic}/{switch} to turn off at {end_time_str}."
+
 
 if __name__ == "__main__":
     # Start the FastMCP server with SSE transport on port 8101
