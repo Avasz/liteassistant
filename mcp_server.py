@@ -21,11 +21,7 @@ logging.basicConfig(
 logger = logging.getLogger("mcp_server")
 
 # Initialize FastMCP Server
-mcp = FastMCP(
-    "LiteAssistant",
-    title="LiteAssistant Home Automation MCP",
-    description="Control and monitor Tasmota-based smart home devices."
-)
+mcp = FastMCP("LiteAssistant")
 
 _services_started = False
 _service_lock = asyncio.Lock()
