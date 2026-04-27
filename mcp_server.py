@@ -28,6 +28,7 @@ _service_lock = asyncio.Lock()
 
 async def ensure_services():
     """Ensure background services (MQTT, Notifications) are started once."""
+    await asyncio.sleep(0.5)  # Give SSE transport a moment to stabilize
     global _services_started
     if _services_started:
         return
