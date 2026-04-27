@@ -163,17 +163,17 @@ async def send_notification(message: str) -> str:
     return "Notification triggered via configured providers."
 
 @mcp.tool()
-async def set_switch_timer(device_topic: str, switch: str, duration_minutes: int) -> str:
-    """Use this to set a hardware-backed timer in the LiteAssistant database. The backend TimerService will handle the actual OFF command."""
+async def set_switch_timer(device_id: int, switch: str, duration_minutes: int) -> str:
+    """Use this to set a hardware-backed timer in the LiteAssistant database. The backend TimerService will handle the actual OFF command. For multi-channel devices like 'waterswitch', the switch name must be POWER1, POWER2, etc."""
     await ensure_services()
     async with AsyncSessionLocal() as db:
-        device = await crud.get_device_by_topic(db, device_topic)
+        device = await crud.get_device(db, device_id)
         if not device:
-            return f"Error: Device {device_topic} not found."
+            return f"Error: Device {device_id} not found."
             
         now = datetime.now(timezone.utc)
         end_time = now + timedelta(minutes=duration_minutes)
-        end_time_str = end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        end_time_str = end_time.isoformat().replace('+00:00', 'Z')
         
         # Merge existing timers
         timers = dict(device.active_timers or {})
@@ -181,11 +181,11 @@ async def set_switch_timer(device_topic: str, switch: str, duration_minutes: int
         
         # Update using crud.create_or_update_device
         await crud.create_or_update_device(db, {
-            "mqtt_topic": device_topic,
+            "mqtt_topic": device.mqtt_topic,
             "active_timers": timers
         })
         
-    return f"Set timer for {device_topic}/{switch} to turn off at {end_time_str}."
+    return f"Set timer for {device.mqtt_topic}/{switch} to turn off at {end_time_str}."
 
 
 if __name__ == "__main__":
