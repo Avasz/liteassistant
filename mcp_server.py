@@ -277,5 +277,5 @@ async def send_notification(message: str) -> str:
 
 
 if __name__ == "__main__":
-    logger.info("Starting LiteAssistant MCP Server on port 8101 (SSE)...")
-    mcp.run(transport="sse", host="0.0.0.0", port=8101)
+    logger.info("Starting LiteAssistant MCP Server on port 8101 (streamable-http)...")
+    mcp.run(transport="streamable-http", host="0.0.0.0", port=8101)
