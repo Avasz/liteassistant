@@ -13,7 +13,7 @@ COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install FastMCP and uvicorn for the sidecar
-RUN pip install --no-cache-dir fastmcp uvicorn[standard] httpx sse-starlette
+RUN pip install --no-cache-dir "fastmcp>=2.0.0,<4.0.0" uvicorn[standard] httpx sse-starlette
 
 # Copy the backend source code (needed for DB models and logic)
 COPY backend/ ./backend/
