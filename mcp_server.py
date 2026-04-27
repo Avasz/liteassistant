@@ -49,7 +49,7 @@ async def toggle_device(device_id: int, state: str, channel: int = None) -> str:
     Sends the MQTT command to flip a switch on a device.
     :param device_id: The ID of the device to toggle.
     :param state: 'ON', 'OFF', or 'TOGGLE'.
-    :param channel: Optional relay channel number (e.g. 1 to 8). If a device has multiple switches (like 'waterswitch'), specify the channel to target a specific relay. Defaults to base POWER.
+    :param channel: Optional relay channel number (e.g. 1 to 8). If a device has multiple switches (like 'waterswitch'), specify the channel to target a specific relay. This parameter maps to POWER1, POWER2, etc., in Tasmota. Defaults to base POWER.
     """
     await ensure_services()
     async with AsyncSessionLocal() as db:
@@ -164,7 +164,7 @@ async def send_notification(message: str) -> str:
 
 @mcp.tool()
 async def set_switch_timer(device_id: int, switch: str, duration_minutes: int) -> str:
-    """Use this to set a hardware-backed timer in the LiteAssistant database. The backend TimerService will handle the actual OFF command. For multi-channel devices like 'waterswitch', the switch name must be POWER1, POWER2, etc."""
+    """Sets a hardware-backed timer in the database. REQUIRED for all scheduled turn-offs. Gemma: Do not wait internally; offload to this tool immediately. For multi-channel devices like 'waterswitch', the switch name must be POWER1, POWER2, etc."""
     await ensure_services()
     async with AsyncSessionLocal() as db:
         device = await crud.get_device(db, device_id)
